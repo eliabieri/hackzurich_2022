@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 
 class CameraView extends StatefulWidget {
   const CameraView({Key? key}) : super(key: key);
@@ -9,20 +9,24 @@ class CameraView extends StatefulWidget {
 }
 
 class _CameraViewState extends State<CameraView> {
-  late VideoPlayerController _controller;
+  late VlcPlayerController _videoPlayerController;
   bool ready = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(
-      'http://192.168.1.102:4747/video',
-    )..initialize().then((_) {
-        setState(() {
-          ready = true;
-        });
-        _controller.play();
-      });
+
+    _videoPlayerController = VlcPlayerController.network(
+      'http://192.168.1.101:8080/video',
+      hwAcc: HwAcc.full,
+      options: VlcPlayerOptions(
+          video: VlcVideoOptions([
+        VlcVideoOptions.dropLateFrames(true),
+        VlcVideoOptions.skipFrames(true),
+        VlcAdvancedOptions.liveCaching(0),
+        VlcAdvancedOptions.networkCaching(0)
+      ])),
+    );
   }
 
   @override
@@ -34,25 +38,12 @@ class _CameraViewState extends State<CameraView> {
       elevation: 3,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15.0),
-        child: Builder(builder: (context) {
-          if (!ready) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
-              ),
-            );
-          }
-          return VideoPlayer(
-            _controller,
-          );
-        }),
+        child: VlcPlayer(
+          controller: _videoPlayerController,
+          aspectRatio: 4 / 3,
+          placeholder: const Center(child: CircularProgressIndicator()),
+        ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
   }
 }
