@@ -58,6 +58,8 @@ app.add_middleware(
 
 @app.get("/drive/{direction}")
 def drive(direction: str):
+    global ch1SpeedPromille
+    global ch2SpeedPromille
     try:
         if direction == "up":
             accelerate()
@@ -78,6 +80,8 @@ def drive(direction: str):
 
 
 def updateSpeeds():
+    global ch1SpeedPromille
+    global ch2SpeedPromille
     if ch1SpeedPromille > 0:
         ch1Control.ChangeDutyCycle(ch1SpeedPromille/10)
         log.info("CH1 running: " + str(ch1SpeedPromille/10) + "%")
@@ -92,6 +96,8 @@ def updateSpeeds():
         log.info("CH2 stopped.")
 
 def accelerate():
+    global ch1SpeedPromille
+    global ch2SpeedPromille
     if (ch1SpeedPromille < MAX_SPEED) or (ch2SpeedPromille < MAX_SPEED):
         if ch1SpeedPromille < MAX_SPEED:
             #Start PWM if not already started
@@ -106,6 +112,8 @@ def accelerate():
         updateSpeeds()
 
 def brake():
+    global ch1SpeedPromille
+    global ch2SpeedPromille
     if ch1SpeedPromille > 0:
         ch1SpeedPromille = ch1SpeedPromille-BRAKE_FACTOR
     if ch2SpeedPromille > 0:
@@ -113,11 +121,15 @@ def brake():
     updateSpeeds()
 
 def turnLeft():
+    global ch1SpeedPromille
+    global ch2SpeedPromille
     if ch1SpeedPromille < MAX_SPEED:
         ch1SpeedPromille = ch1SpeedPromille+TURN_FACTOR
         updateSpeeds()
 
 def turnRight():
+    global ch1SpeedPromille
+    global ch2SpeedPromille
     if ch2SpeedPromille < MAX_SPEED:
         ch2SpeedPromille = ch2SpeedPromille+TURN_FACTOR
         updateSpeeds()
