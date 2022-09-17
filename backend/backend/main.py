@@ -47,11 +47,24 @@ app.add_middleware(
 
 @app.get("/drive/{direction}")
 def drive(direction: str):
-    #TODO switch statement, do actions based on button pressed
-    print(direction)
-    #TODO exception handling
-    return "Success"
-
+    try:
+        match direction:
+            case "up":
+                accelerate()
+            case "down":
+                brake()
+            case "left":
+                turnLeft()
+            case "right":
+                turnRight()
+            case _:
+                print("Invalid direction")
+        print(direction)
+        return "Success"
+    except Exception as e:
+        ch1Control.stop()
+        ch2Control.stop()
+        return f"exception {e}"
 
 
 def updateSpeeds():
