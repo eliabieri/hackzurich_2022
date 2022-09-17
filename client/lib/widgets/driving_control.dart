@@ -78,28 +78,38 @@ class _DirectionButtonState extends State<DirectionButton> {
 
   @override
   Widget build(BuildContext context) {
-    return RawKeyboardListener(
+    return KeyboardListener(
       focusNode: widget.focusNode,
-      onKey: (event) {
-        if (event.isKeyPressed(widget.keyboardKey)) {
-          setState(() {
-            _color = Theme.of(context).primaryColor;
-          });
-          widget.onPressed();
-        } else {
-          setState(() {
-            _color = _defaultColor;
-          });
-        }
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: FaIcon(
-          FontAwesomeIcons.play,
-          color: _color,
-          size: 35,
+      onKeyEvent: (event) => _onKeypress(event.logicalKey),
+      child: GestureDetector(
+        onTap: () {
+          _onKeypress(widget.keyboardKey);
+          Future.delayed(
+              const Duration(milliseconds: 300), () => _onKeypress(LogicalKeyboardKey.abort));
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: FaIcon(
+            FontAwesomeIcons.play,
+            color: _color,
+            size: 35,
+          ),
         ),
       ),
     );
+  }
+
+  void _onKeypress(LogicalKeyboardKey key) {
+    debugPrint("Keypress $key");
+    if (key == widget.keyboardKey) {
+      setState(() {
+        _color = Theme.of(context).primaryColor;
+      });
+      widget.onPressed();
+    } else {
+      setState(() {
+        _color = _defaultColor;
+      });
+    }
   }
 }
