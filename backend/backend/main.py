@@ -48,17 +48,16 @@ app.add_middleware(
 @app.get("/drive/{direction}")
 def drive(direction: str):
     try:
-        match direction:
-            case "up":
-                accelerate()
-            case "down":
-                brake()
-            case "left":
-                turnLeft()
-            case "right":
-                turnRight()
-            case _:
-                print("Invalid direction", flush=True)
+        if direction == "up":
+            accelerate()
+        elif direction == "down":
+            brake()
+        elif direction == "left":
+            turnLeft()
+        elif direction == "right":
+            turnRight()
+        else:
+            print("Invalid direction", flush=True)
         print(direction, flush=True)
         return "Success"
     except Exception as e:
