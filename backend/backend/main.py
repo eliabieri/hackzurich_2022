@@ -58,8 +58,8 @@ def drive(direction: str):
             case "right":
                 turnRight()
             case _:
-                print("Invalid direction")
-        print(direction)
+                print("Invalid direction", flush=True)
+        print(direction, flush=True)
         return "Success"
     except Exception as e:
         ch1Control.stop()
@@ -70,16 +70,16 @@ def drive(direction: str):
 def updateSpeeds():
     if ch1SpeedPromille > 0:
         ch1Control.ChangeDutyCycle(ch1SpeedPromille/10)
-        print("CH1 running: " + str(ch1SpeedPromille/10) + "%")
+        print("CH1 running: " + str(ch1SpeedPromille/10) + "%", flush=True)
     else:
         ch1Control.stop()
-        print("CH1 stopped.")
+        print("CH1 stopped.", flush=True)
     if ch2SpeedPromille > 0:
         ch2Control.ChangeDutyCycle(ch2SpeedPromille/10)
-        print("CH2 running: " + str(ch2SpeedPromille/10) + "%")
+        print("CH2 running: " + str(ch2SpeedPromille/10) + "%", flush=True)
     else:
         ch2Control.stop()
-        print("CH2 stopped.")
+        print("CH2 stopped.", flush=True)
 
 def accelerate():
     if (ch1SpeedPromille < MAX_SPEED) or (ch2SpeedPromille < MAX_SPEED):
