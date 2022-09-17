@@ -2,6 +2,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 import RPi.GPIO as GPIO
 
+import logging
+from rich.logging import RichHandler
+
+
+FORMAT = "%(message)s"
+logging.basicConfig(
+    level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
+)
+
+log = logging.getLogger("rich")
+
 
 CH1_PIN = 12
 CH2_PIN = 13
@@ -57,8 +68,8 @@ def drive(direction: str):
         elif direction == "right":
             turnRight()
         else:
-            print("Invalid direction", flush=True)
-        print(direction, flush=True)
+            log.info("Invalid direction")
+        log.info(direction)
         return "Success"
     except Exception as e:
         ch1Control.stop()
@@ -69,16 +80,16 @@ def drive(direction: str):
 def updateSpeeds():
     if ch1SpeedPromille > 0:
         ch1Control.ChangeDutyCycle(ch1SpeedPromille/10)
-        print("CH1 running: " + str(ch1SpeedPromille/10) + "%", flush=True)
+        log.info("CH1 running: " + str(ch1SpeedPromille/10) + "%")
     else:
         ch1Control.stop()
-        print("CH1 stopped.", flush=True)
+        log.info("CH1 stopped.")
     if ch2SpeedPromille > 0:
         ch2Control.ChangeDutyCycle(ch2SpeedPromille/10)
-        print("CH2 running: " + str(ch2SpeedPromille/10) + "%", flush=True)
+        log.info("CH2 running: " + str(ch2SpeedPromille/10) + "%")
     else:
         ch2Control.stop()
-        print("CH2 stopped.", flush=True)
+        log.info("CH2 stopped.")
 
 def accelerate():
     if (ch1SpeedPromille < MAX_SPEED) or (ch2SpeedPromille < MAX_SPEED):
