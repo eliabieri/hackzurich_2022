@@ -70,7 +70,7 @@ def drive(direction: str):
         else:
             log.info("Invalid direction")
         log.info(direction)
-        return "Success"
+        return f"ch1Speed={ch1SpeedPromille/10} ch2Speed={ch2SpeedPromille/10}"
     except Exception as e:
         ch1Control.stop()
         ch2Control.stop()
