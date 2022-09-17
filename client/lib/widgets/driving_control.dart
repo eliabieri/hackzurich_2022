@@ -1,3 +1,4 @@
+import 'package:client/service/direction_sender.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -22,6 +23,7 @@ class _DrivingControlState extends State<DrivingControl> {
           child: DirectionButton(
             focusNode: _focusNode,
             keyboardKey: LogicalKeyboardKey.arrowUp,
+            onPressed: () => DirectionSender.send(Direction.up),
           ),
         ),
         Row(
@@ -32,6 +34,7 @@ class _DrivingControlState extends State<DrivingControl> {
               child: DirectionButton(
                 focusNode: _focusNode,
                 keyboardKey: LogicalKeyboardKey.arrowLeft,
+                onPressed: () => DirectionSender.send(Direction.left),
               ),
             ),
             RotatedBox(
@@ -39,6 +42,7 @@ class _DrivingControlState extends State<DrivingControl> {
               child: DirectionButton(
                 focusNode: _focusNode,
                 keyboardKey: LogicalKeyboardKey.arrowDown,
+                onPressed: () => DirectionSender.send(Direction.down),
               ),
             ),
             RotatedBox(
@@ -46,6 +50,7 @@ class _DrivingControlState extends State<DrivingControl> {
               child: DirectionButton(
                 focusNode: _focusNode,
                 keyboardKey: LogicalKeyboardKey.arrowRight,
+                onPressed: () => DirectionSender.send(Direction.right),
               ),
             ),
           ],
@@ -58,7 +63,9 @@ class _DrivingControlState extends State<DrivingControl> {
 class DirectionButton extends StatefulWidget {
   final LogicalKeyboardKey keyboardKey;
   final FocusNode focusNode;
-  const DirectionButton({required this.focusNode, required this.keyboardKey, Key? key})
+  final void Function() onPressed;
+  const DirectionButton(
+      {required this.focusNode, required this.keyboardKey, required this.onPressed, Key? key})
       : super(key: key);
 
   @override
@@ -78,6 +85,7 @@ class _DirectionButtonState extends State<DirectionButton> {
           setState(() {
             _color = Theme.of(context).primaryColor;
           });
+          widget.onPressed();
         } else {
           setState(() {
             _color = _defaultColor;
