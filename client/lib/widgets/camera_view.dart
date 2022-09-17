@@ -10,15 +10,17 @@ class CameraView extends StatefulWidget {
 
 class _CameraViewState extends State<CameraView> {
   late VideoPlayerController _controller;
+  bool ready = false;
 
   @override
   void initState() {
     super.initState();
     _controller = VideoPlayerController.network(
-      'http://172.20.10.3:8081',
+      'http://192.168.1.102:4747/video',
     )..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
+        setState(() {
+          ready = true;
+        });
         _controller.play();
       });
   }
@@ -32,7 +34,18 @@ class _CameraViewState extends State<CameraView> {
       elevation: 3,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15.0),
-        child: VideoPlayer(_controller),
+        child: Builder(builder: (context) {
+          if (!ready) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).primaryColor,
+              ),
+            );
+          }
+          return VideoPlayer(
+            _controller,
+          );
+        }),
       ),
     );
   }

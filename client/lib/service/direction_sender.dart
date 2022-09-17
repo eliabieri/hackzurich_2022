@@ -11,7 +11,6 @@ enum Direction {
 class DirectionSender {
   static void send(Direction direction) {
     final url = Uri.http('127.0.0.1:8000', 'drive/${describeEnum(direction)}');
-    print(url);
     http.get(url);
   }
 }
