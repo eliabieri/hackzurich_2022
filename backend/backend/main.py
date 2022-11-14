@@ -20,25 +20,22 @@ SERVO_FULL_LEFT_DC = 50
 SERVO_FULL_RIGHT_DC = 100
 TURN_FACTOR = 5
 
-MOTOR_IN1 = 13
-MOTOR_IN2 = 14
-
-
+MOTOR_IN1 = 14
+MOTOR_IN2 = 15
 
 #Use BOARD numbering for pin numbers
 GPIO.setmode(GPIO.BCM)
 
-
 #Initialize GPIOs
 GPIO.setup(SERVO_PIN, GPIO.OUT, initial=GPIO.LOW)
-# GPIO.setup(CH2_PIN, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(MOTOR_IN1, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(MOTOR_IN2, GPIO.OUT, initial=GPIO.LOW)
 
-
-#Initalize as PWM
+#Initalize servo pin as PWM
 servoControl = GPIO.PWM(SERVO_PIN, PWM_FREQUENCY_SERVO_HZ)
-# ch2Control = GPIO.PWM(CH2_PIN, PWM_FREQUENCY)
 
 servoDirection = 0
+motorState = "brake"
 
 app = FastAPI()
 
@@ -54,25 +51,24 @@ app.add_middleware(
 
 @app.get("/drive/{direction}")
 def drive(direction: str):
-    global ch1SpeedPromille
-    global ch2SpeedPromille
+    global servoDirection
     try:
         if direction == "up":
-            accelerate()
+            driveForward()
         elif direction == "down":
-            brake()
+            driveBackwards()
         elif direction == "left":
             turnLeft()
         elif direction == "right":
             turnRight()
         else:
             goNeutral()
-            log.info("Invalid direction")
-        log.info(direction)
-        return f"ch1Speed={ch1SpeedPromille/10} ch2Speed={ch2SpeedPromille/10}"
+        print(f"direction={direction}, servoDirection={servoDirection}, motorState={motorState}")
+        return f"servoDirection={servoDirection}, motorState={motorState}"
     except Exception as e:
         servoControl.stop()
-        # ch2Control.stop()
+        GPIO.cleanup()
+        print("Cleaned up\n")
         return f"exception {e}"
 
 
@@ -92,30 +88,19 @@ def updateSpeeds():
     else:
         servoControl.ChangeDutyCycle(getServoPwm(servoDirection))
 
-# def accelerate():
-    # global ch1SpeedPromille
-    # global ch2SpeedPromille
-    # if (ch1SpeedPromille < MAX_SPEED) or (ch2SpeedPromille < MAX_SPEED):
-    #     if ch1SpeedPromille < MAX_SPEED:
-    #         #Start PWM if not already started
-    #         if ch1SpeedPromille == 0:
-    #             ch1Control.start(0.1)
-    #         ch1SpeedPromille = ch1SpeedPromille+ACCELERATION_FACTOR
-    #     if ch2SpeedPromille < MAX_SPEED:
-    #         #Start PWM if not already started
-    #         if ch2SpeedPromille == 0:
-    #             ch2Control.start(0.1)
-    #         ch2SpeedPromille = ch2SpeedPromille+ACCELERATION_FACTOR
-    #     updateSpeeds()
+def driveForward():
+    global motorState
+    if(motorState != "forward"):
+        motorState = "forward"
+        GPIO.output(MOTOR_IN1, GPIO.HIGH)
+        GPIO.output(MOTOR_IN2, GPIO.LOW)
 
-# def brake():
-    # global ch1SpeedPromille
-    # global ch2SpeedPromille
-    # if ch1SpeedPromille > 0:
-    #     ch1SpeedPromille = ch1SpeedPromille-BRAKE_FACTOR
-    # if ch2SpeedPromille > 0:
-    #     ch2SpeedPromille = ch2SpeedPromille-BRAKE_FACTOR
-    # updateSpeeds()
+def driveBackwards():
+    global motorState
+    if (motorState != "backwards"):
+        motorState = "backwards"
+        GPIO.output(MOTOR_IN1, GPIO.LOW)
+        GPIO.output(MOTOR_IN2, GPIO.HIGH)
 
 def turnLeft():
     global servoDirection
@@ -142,4 +127,9 @@ def goNeutral():
             servoDirection = servoDirection - 2*TURN_FACTOR
         elif(servoDirection < 0):
             servoDirection = servoDirection + 2*TURN_FACTOR
+    global motorState
+    if(motorState != "brake"):
+        motorState = "brake"
+        GPIO.output(MOTOR_IN1, GPIO.LOW)
+        GPIO.output(MOTOR_IN2, GPIO.LOW)
     updateSpeeds()
