@@ -16,8 +16,8 @@ log = logging.getLogger("rich")
 
 SERVO_PIN = 12
 PWM_FREQUENCY_SERVO_HZ = 500
-SERVO_FULL_LEFT_DC = 50
-SERVO_FULL_RIGHT_DC = 100
+SERVO_MAX_DUTYCYCLE_CHANGE = 10
+
 TURN_FACTOR = 5
 
 MOTOR_IN1 = 14
@@ -75,11 +75,11 @@ def drive(direction: str):
 #pass -100 for full left, pass +100 for full right
 def getServoPwm(direction):
     if(direction < -100):
-        return 50
+        return 65
     if(direction > 100):
-        return 100
+        return 85
     #converts -100 (full left) to 50% duty cycle, and +100 to 100% duty cycle
-    return ((((direction+100)/100)*25) + 50)
+    return (((direction/100) * SERVO_MAX_DUTYCYCLE_CHANGE) + 75)
 
 def updateSpeeds():
     global servoDirection
