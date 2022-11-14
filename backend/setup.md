@@ -1,7 +1,7 @@
 raspi setup
 
 1. enable pi camera in ``` raspi-config ```
-2. ``` sudo apt-get update | apt-get upgrade ```
+2. ``` sudo apt-get update | sudo apt-get upgrade ```
 3. install vlc ``` sudo apt-get install vlc ```
 4. start stream
 
