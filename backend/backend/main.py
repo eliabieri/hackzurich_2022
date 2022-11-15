@@ -22,6 +22,8 @@ TURN_FACTOR = 5
 
 MOTOR_IN1 = 14
 MOTOR_IN2 = 15
+MOTOR_SPEED_PIN = 16
+MOTOR_SPEED = 50
 
 #Use BOARD numbering for pin numbers
 GPIO.setmode(GPIO.BCM)
@@ -30,9 +32,13 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(SERVO_PIN, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(MOTOR_IN1, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(MOTOR_IN2, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(MOTOR_SPEED_PIN, GPIO.OUT, initial=GPIO.LOW)
 
 #Initalize servo pin as PWM
 servoControl = GPIO.PWM(SERVO_PIN, PWM_FREQUENCY_SERVO_HZ)
+#Initialize motor speed pin as pwm
+motorSpeedControl = GPIO.PWM(MOTOR_SPEED_PIN, MOTOR_SPEED)
+motorSpeedControl.ChangeDutyCycle(MOTOR_SPEED)
 
 servoDirection = 0
 motorState = "brake"
