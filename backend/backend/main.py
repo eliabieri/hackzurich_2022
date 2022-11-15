@@ -22,7 +22,7 @@ TURN_FACTOR = 5
 
 MOTOR_IN1 = 14
 MOTOR_IN2 = 15
-MOTOR_SPEED_PIN = 16
+MOTOR_SPEED_PIN = 10
 MOTOR_SPEED = 50
 
 #Use BOARD numbering for pin numbers
@@ -73,6 +73,7 @@ def drive(direction: str):
         return f"servoDirection={servoDirection}, motorState={motorState}"
     except Exception as e:
         servoControl.stop()
+        motorSpeedControl.stop()
         GPIO.cleanup()
         print("Cleaned up\n")
         return f"exception {e}"
