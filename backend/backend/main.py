@@ -99,17 +99,15 @@ def updateSpeeds():
 
 def driveForward():
     global motorState
-    if(motorState != "forward"):
-        motorState = "forward"
-        GPIO.output(MOTOR_IN1, GPIO.HIGH)
-        GPIO.output(MOTOR_IN2, GPIO.LOW)
+    motorState = "forward"
+    GPIO.output(MOTOR_IN1, GPIO.HIGH)
+    GPIO.output(MOTOR_IN2, GPIO.LOW)
 
 def driveBackwards():
     global motorState
-    if (motorState != "backwards"):
-        motorState = "backwards"
-        GPIO.output(MOTOR_IN1, GPIO.LOW)
-        GPIO.output(MOTOR_IN2, GPIO.HIGH)
+    motorState = "backwards"
+    GPIO.output(MOTOR_IN1, GPIO.LOW)
+    GPIO.output(MOTOR_IN2, GPIO.HIGH)
 
 def turnLeft():
     global servoDirection
@@ -137,8 +135,7 @@ def goNeutral():
         elif(servoDirection < 0):
             servoDirection = servoDirection + 2*TURN_FACTOR
     global motorState
-    if(motorState != "brake"):
-        motorState = "brake"
-        GPIO.output(MOTOR_IN1, GPIO.LOW)
-        GPIO.output(MOTOR_IN2, GPIO.LOW)
+    motorState = "brake"
+    GPIO.output(MOTOR_IN1, GPIO.LOW)
+    GPIO.output(MOTOR_IN2, GPIO.LOW)
     updateSpeeds()
