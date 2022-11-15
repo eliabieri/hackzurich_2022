@@ -110,32 +110,34 @@ def driveBackwards():
     GPIO.output(MOTOR_IN2, GPIO.HIGH)
 
 def turnLeft():
-    global servoDirection
-    if servoDirection > (-100+TURN_FACTOR):
-        servoDirection = servoDirection - TURN_FACTOR
-    else:
-        servoDirection = -100
-    updateSpeeds()
+    servoControl.ChangeDutyCycle(50)
+    # global servoDirection
+    # if servoDirection > (-100+TURN_FACTOR):
+    #     servoDirection = servoDirection - TURN_FACTOR
+    # else:
+    #     servoDirection = -100
+    # updateSpeeds()
 
 def turnRight():
-    global servoDirection
-    if servoDirection < (100-TURN_FACTOR):
-        servoDirection = servoDirection + TURN_FACTOR
-    else:
-        servoDirection = 100
-    updateSpeeds()
+    servoControl.ChangeDutyCycle(100)
+    # global servoDirection
+    # if servoDirection < (100-TURN_FACTOR):
+    #     servoDirection = servoDirection + TURN_FACTOR
+    # else:
+    #     servoDirection = 100
+    # updateSpeeds()
 
 def goNeutral():
-    global servoDirection
-    if(servoDirection < (2.5*TURN_FACTOR) or servoDirection > (-2.5*TURN_FACTOR)):
-        servoDirection = 0
-    else:
-        if(servoDirection > 0):
-            servoDirection = servoDirection - 2*TURN_FACTOR
-        elif(servoDirection < 0):
-            servoDirection = servoDirection + 2*TURN_FACTOR
+    # global servoDirection
+    # if(servoDirection < (2.5*TURN_FACTOR) or servoDirection > (-2.5*TURN_FACTOR)):
+    #     servoDirection = 0
+    # else:
+    #     if(servoDirection > 0):
+    #         servoDirection = servoDirection - 2*TURN_FACTOR
+    #     elif(servoDirection < 0):
+    #         servoDirection = servoDirection + 2*TURN_FACTOR
     global motorState
     motorState = "brake"
     GPIO.output(MOTOR_IN1, GPIO.LOW)
     GPIO.output(MOTOR_IN2, GPIO.LOW)
-    updateSpeeds()
+    # updateSpeeds()
