@@ -17,6 +17,7 @@ log = logging.getLogger("rich")
 SERVO_PIN = 12
 PWM_FREQUENCY_SERVO_HZ = 500
 SERVO_MAX_DUTYCYCLE_CHANGE = 10
+SERVO_NEUTRAL_DUTYCYCLE = 75
 
 TURN_FACTOR = 5
 
@@ -36,9 +37,10 @@ GPIO.setup(MOTOR_SPEED_PIN, GPIO.OUT, initial=GPIO.LOW)
 
 #Initalize servo pin as PWM
 servoControl = GPIO.PWM(SERVO_PIN, PWM_FREQUENCY_SERVO_HZ)
+servoControl.start(SERVO_NEUTRAL_DUTYCYCLE)
 #Initialize motor speed pin as pwm
 motorSpeedControl = GPIO.PWM(MOTOR_SPEED_PIN, MOTOR_SPEED)
-motorSpeedControl.ChangeDutyCycle(MOTOR_SPEED)
+motorSpeedControl.start(MOTOR_SPEED)
 
 servoDirection = 0
 motorState = "brake"
@@ -91,7 +93,7 @@ def getServoPwm(direction):
 def updateSpeeds():
     global servoDirection
     if servoDirection > -1 or servoDirection < 1:
-        servoControl.stop()
+        servoControl.ChangeDutyCycle(SERVO_NEUTRAL_DUTYCYCLE)
     else:
         servoControl.ChangeDutyCycle(getServoPwm(servoDirection))
 
@@ -115,7 +117,7 @@ def turnLeft():
         servoDirection = servoDirection - TURN_FACTOR
     else:
         servoDirection = -100
-        updateSpeeds()
+    updateSpeeds()
 
 def turnRight():
     global servoDirection
@@ -123,7 +125,7 @@ def turnRight():
         servoDirection = servoDirection + TURN_FACTOR
     else:
         servoDirection = 100
-        updateSpeeds()
+    updateSpeeds()
 
 def goNeutral():
     global servoDirection
